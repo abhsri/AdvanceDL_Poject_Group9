@@ -1,2 +1,3 @@
-# AdvanceDL_Poject_Group9
-This repo consists of implementation of paper, https://arxiv.org/pdf/2103.10994.pdf
+# Self-Supervised Classification Network
+
+This repo consists of implementation of above mentioned paper, https://arxiv.org/pdf/2103.10994.pdf
