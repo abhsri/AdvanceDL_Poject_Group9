@@ -1,7 +1,11 @@
 import pandas as pd
 import seaborn as sns
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
+
+# setup for plottning
+sns.set_theme(style="darkgrid")
+sns_pal = "dark"
 
 class DataRecorder():
     """
@@ -25,21 +29,25 @@ class DataRecorder():
 
     def record_accuracy(self, set: str, epoch: int, accuracy: float):
         """Records new datapoint for accuracy."""
-        self.record = self.record.append({
+        new_row = pd.Series({
             'set': set,
             'epoch': epoch,
             'metric': 'accuracy',
             'value': accuracy
-        }, ignore_index=True)
+        })
+        self.record = pd.concat([self.record, new_row.to_frame().T],
+                                ignore_index=True)
 
     def record_loss(self, set: str, epoch: int, loss: float):
         """Records new datapoint for loss."""
-        self.record = self.record.append({
+        new_row = pd.Series({
             'set': set,
             'epoch': epoch,
             'metric': 'loss',
             'value': loss
-        }, ignore_index=True)
+        })
+        self.record = pd.concat([self.record, new_row.to_frame().T],
+                                ignore_index=True)
 
     def info(self):
         return self.record.info()

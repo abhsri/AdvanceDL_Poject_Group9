@@ -1,3 +1,5 @@
+import tensorflow as tf 
+
 from tensorflow.keras.activations import softmax
 
 from tensorflow.math import log as tf_log
@@ -14,6 +16,7 @@ class SelfClassifier():
         self.t_r = t_r
         self.t_c = t_c
 
+    @tf.function
     def __call__(self, s1, s2):
         N, C, t_r, t_c = self.N, self.C, self.t_r, self.t_c
         # log_y_x1

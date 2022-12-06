@@ -22,7 +22,7 @@ class WarmUpCosineDecay(tf.keras.optimizers.schedules.LearningRateSchedule):
 
     def lr_warmup_cosine_decay(self, global_step, warmup_steps, hold=0,
                                total_steps=0, start_lr=0.0, target_lr=1e-3):
-        learning_rate = 0.5 * target_lr * (1 + tf.cos(tf.constant(np.pi) * (
+        learning_rate = 0.5 * target_lr * (1 + tf.cos(tf.constant(np.pi) * float(
             global_step - warmup_steps - hold) / float(
                 total_steps - warmup_steps - hold)))
         warmup_lr = target_lr * (global_step / warmup_steps)

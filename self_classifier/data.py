@@ -13,10 +13,10 @@ class DataLoader():
         if absolute_in_path:
             path = in_path
         else:
-            path = os.in_path.join(os.getcwd(), in_path)
+            path = os.path.join(os.getcwd(), in_path)
 
         # check if folder exists
-        if os.in_path.exists(path) is False:
+        if os.path.exists(path) is False:
             if mkdir is False:
                 raise NotADirectoryError(
                     f"Directory '{path}' does not exist and 'mkdir'=False")
@@ -31,15 +31,15 @@ class DataLoader():
             return tf.data.Dataset.load, tf.data.Dataset.save
 
     def load(self):
-        return self._load(self.data_path)
+        return self._load(self.path)
 
     def save(self, dataset):
-        return self._save(dataset, self.data_path)
+        return self._save(dataset, self.path)
 
     def exists(self):
-        return os.path.exists(os.path.join(self.data_path, "dataset_spec.pb"))
+        return os.path.exists(os.path.join(self.path, "dataset_spec.pb"))
 
-    def get_train(self, config, x_train):
+    def get_train(self, config):
         if self.exists():
             # Load existing dataset
             print("Stored training dataset found, loading...", end="")
@@ -54,7 +54,7 @@ class DataLoader():
 
         else:
             print("Generating new test augmentation dataset...")
-
+            (x_train, y_train), (x_test, y_test) = config['DATASET'].load_data()
             # Generate augmentations
             aug_x_train = gen_augment(x_train, n_augments=config['N_AUG'])
             # Create training dataset
@@ -69,7 +69,7 @@ class DataLoader():
         assert isinstance(train_ds, tf.data.Dataset)
         return train_ds
 
-    def get_test(self, config, x_test, y_test):
+    def get_test(self, config):
         if self.exists():
             # Load existing dataset
             print("Stored test dataset found, loading...", end="")
@@ -85,6 +85,7 @@ class DataLoader():
         else:
             # Generate augmentations
             print("Generating new test augmentation dataset...")
+            (x_train, y_train), (x_test, y_test) = config['DATASET'].load_data()
             aug_x_test = gen_augment(x_test, n_augments=config['N_AUG'])
             # Create test dataset
             test_ds = tf.data.Dataset.from_tensor_slices(
