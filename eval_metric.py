@@ -1,5 +1,6 @@
 import sklearn as skl
 import scipy 
+import numpy as np
 def metric(y_true, y_pred, is_print=False):
     nmi = skl.metrics.normalized_mutual_info_score(y_true, y_pred)
     ami = skl.metrics.adjusted_mutual_info_score(y_true, y_pred)
