@@ -1,4 +1,5 @@
 import sklearn as skl
+import matplotlib.pyplot as plt
 import scipy
 import numpy as np
 
@@ -23,3 +24,16 @@ def metric(y_true, y_pred, is_print=False):
     acc = np.trace(new_confusion_matrix) / len(y_pred)
     return nmi, ami, ari, acc
 
+
+def class_histogram(labels, plot=True, addon_title=''):
+    cls_list, cls_hist = np.unique(labels, return_counts=True)
+    cls_cnt = cls_list.shape[0]
+
+    if plot:
+        fig, axs = plt.subplots(1, figsize=(13, 6))
+        axs = plt.hist(labels, bins=cls_cnt)
+        plt.title(f'Class Histogram: {cls_cnt} for {addon_title}')
+        plt.xlabel('Class')
+        plt.ylabel('Datapoints in set')
+        plt.show()
+    return cls_cnt, cls_list, cls_hist

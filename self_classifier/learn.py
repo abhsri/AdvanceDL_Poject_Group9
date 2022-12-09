@@ -6,7 +6,7 @@ from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 
-from .metric import metric
+from .metric import metric, class_histogram
 from .logging import DataRecorder
 from .data import rand_augment
 
@@ -91,6 +91,7 @@ class UnderSupervisedLearner():
             self.valid_ami = []
             self.valid_ari = []
             self.valid_acc = []
+            self.predictions = np.array([])
 
             print(30*"=", "EPOCH", (epoch+1), 30*"=")
 
@@ -104,8 +105,12 @@ class UnderSupervisedLearner():
             for _, *augments, test_labels in tqdm(test_ds, "Validation"):
                 a1, a2 = rand_augment(augments, 2)
                 loss, p1, p2 = self.valid_step(a1, a2)
+                self.predictions = np.concatenate((self.predictions, p1.numpy()))
+                self.predictions = np.concatenate((self.predictions, p2.numpy()))
+
                 self.valid_loss.append(loss.numpy())
-                nmi, ami, ari, acc = metric(test_labels,p1)
+                test_labels = test_labels.numpy()
+                nmi, ami, ari, acc = metric(test_labels.reshape(-1),p1)
                 self.valid_nmi.append(nmi)
                 self.valid_ami.append(ami)
                 self.valid_ari.append(ari)
@@ -140,6 +145,11 @@ class UnderSupervisedLearner():
             if plot_every != 0 and (epoch + 1) % plot_every == 0:
                 # Plot resutls so far
                 self.recorder.plot()
+                cls_cnt, cls_list, cls_hist = class_histogram(
+                    self.predictions, addon_title="Validation")
+                comb = [(x, y) for x, y in zip(cls_list, cls_hist)]
+                print("Class list: ", comb)
+                
 
             if early_stopping:
                 if epoch > wait_epoch:

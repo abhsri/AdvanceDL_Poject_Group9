@@ -48,7 +48,7 @@ class DynamicModel(CustomModel):
 
 
 class PretrainedModel(CustomModel):
-    def __init__(self, pre_model, input_shape, output_shape):
+    def __init__(self, pre_model, activation, input_shape, output_shape):
         super(PretrainedModel, self).__init__()
 
         if pre_model == "ResNet50":
@@ -76,8 +76,9 @@ class PretrainedModel(CustomModel):
 
         # Output layer
         x = tf.keras.layers.Flatten()(base_model.output)
-        x = tf.keras.layers.Dense(1024, activation='relu')(x)
-        x = tf.keras.layers.Dense(128, activation='relu')(x)
+        x = tf.keras.layers.Dense(1024, activation=activation)(x)
+        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.Dense(128, activation=activation)(x)
         predictions = tf.keras.layers.Dense(
             output_shape, activation='softmax')(x)
 

@@ -21,6 +21,7 @@ from .optim import lr_schedular
 
 # metric import
 from .metric import metric
+from .metric import class_histogram
 
 # plotter import
 from .plotter import label_plotter
