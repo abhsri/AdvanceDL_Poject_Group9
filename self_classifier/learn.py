@@ -6,7 +6,7 @@ from tqdm import tqdm
 import numpy as np
 import matplotlib.pyplot as plt
 
-from metric import metric
+from .metric import metric
 from .logging import DataRecorder
 from .data import rand_augment
 
@@ -105,11 +105,11 @@ class UnderSupervisedLearner():
                 a1, a2 = rand_augment(augments, 2)
                 loss, p1, p2 = self.valid_step(a1, a2)
                 self.valid_loss.append(loss.numpy())
-                #nmi, ami, ari, acc = metric(p1, p2)
-                self.valid_nmi.append(skl.metrics.normalized_mutual_info_score(p1, p2))
-                self.valid_ami.append(skl.metrics.adjusted_mutual_info_score(p1, p2))
-                self.valid_ari.append(skl.metrics.adjusted_rand_score(p1, p2))
-                self.valid_acc.append(skl.metrics.accuracy_score(p1, p2))
+                nmi, ami, ari, acc = metric(test_labels,p1)
+                self.valid_nmi.append(nmi)
+                self.valid_ami.append(ami)
+                self.valid_ari.append(ari)
+                self.valid_acc.append(acc)
 
 
             try:
