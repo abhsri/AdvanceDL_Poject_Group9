@@ -39,7 +39,7 @@ class DataLoader():
     def exists(self):
         return os.path.exists(os.path.join(self.path, "dataset_spec.pb"))
 
-    def get_train(self, config):
+    def get_train(self, config, pre_process=None):
         if self.exists():
             # Load existing dataset
             print("Stored training dataset found, loading...", end="")
@@ -54,7 +54,12 @@ class DataLoader():
 
         else:
             print("Generating new test augmentation dataset...")
-            (x_train, y_train), (x_test, y_test) = config['DATASET'].load_data()
+            (x_train, y_train), (x_test,
+                                 y_test) = config['DATASET'].load_data()
+
+            if pre_process is not None:
+                x_train = pre_process(x_train)
+
             # Generate augmentations
             aug_x_train = gen_augment(x_train, n_augments=config['N_AUG'])
             # Create training dataset
@@ -69,7 +74,7 @@ class DataLoader():
         assert isinstance(train_ds, tf.data.Dataset)
         return train_ds
 
-    def get_test(self, config):
+    def get_test(self, config, pre_process=None):
         if self.exists():
             # Load existing dataset
             print("Stored test dataset found, loading...", end="")
@@ -85,7 +90,12 @@ class DataLoader():
         else:
             # Generate augmentations
             print("Generating new test augmentation dataset...")
-            (x_train, y_train), (x_test, y_test) = config['DATASET'].load_data()
+            (x_train, y_train), (x_test,
+                                 y_test) = config['DATASET'].load_data()
+
+            if pre_process is not None:
+                x_train = pre_process(x_train)
+
             aug_x_test = gen_augment(x_test, n_augments=config['N_AUG'])
             # Create test dataset
             test_ds = tf.data.Dataset.from_tensor_slices(
