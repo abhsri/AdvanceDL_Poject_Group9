@@ -62,6 +62,7 @@ class DataLoader():
 
             # Generate augmentations
             aug_x_train = gen_augment(x_train, n_augments=config['N_AUG'])
+
             # Create training dataset
             train_ds = tf.data.Dataset.from_tensor_slices(
                 (x_train, *aug_x_train)).shuffle(
@@ -94,9 +95,10 @@ class DataLoader():
                                  y_test) = config['DATASET'].load_data()
 
             if pre_process is not None:
-                x_train = pre_process(x_train)
+                x_test = pre_process(x_test)
 
             aug_x_test = gen_augment(x_test, n_augments=config['N_AUG'])
+
             # Create test dataset
             test_ds = tf.data.Dataset.from_tensor_slices(
                 (x_test, *aug_x_test, y_test)).batch(config['BATCH_SIZE'])
