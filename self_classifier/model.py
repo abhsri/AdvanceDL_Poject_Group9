@@ -27,14 +27,14 @@ class CustomModel(Model):
 
 class DynamicModel(CustomModel):
     def __init__(self, input_shape, output_shape, n_layers=2, n_nodes=128,
-                 activation=tf.keras.layers.ReLU(), batch_norm=True):
+                 activation=tf.keras.layers.ReLU(), batch_norm=True,
+                  if_conv_layer=True, final_layer_bias=True, final_layer_activation=True):
         super(DynamicModel, self).__init__()
         # Input layers
-        self.model = tf.keras.models.Sequential([
-            tf.keras.layers.Conv2D(16, 3, activation=activation,
-                                   input_shape=input_shape),
-            tf.keras.layers.Flatten()
-        ])
+        self.model = tf.keras.models.Sequential([tf.keras.Input(shape=input_shape)])
+        if if_conv_layer:
+          self.model.add(tf.keras.layers.Conv2D(32, 3, activation=activation))
+        self.model.add(tf.keras.layers.Flatten())
         # Hidden Layers
         for _ in range(n_layers):
             self.model.add(tf.keras.layers.Dense(n_nodes))
@@ -43,8 +43,9 @@ class DynamicModel(CustomModel):
                 self.model.add(tf.keras.layers.BatchNormalization())
 
         # Output layer
-        self.model.add(tf.keras.layers.Dense(output_shape))
-        self.model.add(tf.keras.layers.Activation("softmax"))
+        self.model.add(tf.keras.layers.Dense(output_shape, use_bias=final_layer_bias))
+        if final_layer_activation:
+            self.model.add(tf.keras.layers.Activation("softmax"))
 
 
 class PretrainedModel(CustomModel):

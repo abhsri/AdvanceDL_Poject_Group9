@@ -25,7 +25,7 @@ class DataLoader():
         return path
 
     def _set_tf_func(self):
-        if "2.9" in tf.__version__:
+        if ("2.9" in tf.__version__) or  ("2.6" in tf.__version__):
             return tf.data.experimental.load, tf.data.experimental.save
         else:
             return tf.data.Dataset.load, tf.data.Dataset.save
@@ -39,7 +39,7 @@ class DataLoader():
     def exists(self):
         return os.path.exists(os.path.join(self.path, "dataset_spec.pb"))
 
-    def get_train(self, config, pre_process=None):
+    def get_train(self, config, pre_process=None, extend_axis=False):
         if self.exists():
             # Load existing dataset
             print("Stored training dataset found, loading...", end="")
@@ -59,7 +59,9 @@ class DataLoader():
 
             if pre_process is not None:
                 x_train = pre_process(x_train)
-
+                
+            if extend_axis: #this will extend the axis
+                x_train = x_train[..., tf.newaxis].astype("float32")
             # Generate augmentations
             aug_x_train = gen_augment(x_train, n_augments=config['N_AUG'])
 
@@ -75,7 +77,7 @@ class DataLoader():
         assert isinstance(train_ds, tf.data.Dataset)
         return train_ds
 
-    def get_test(self, config, pre_process=None):
+    def get_test(self, config, pre_process=None, extend_axis=False):
         if self.exists():
             # Load existing dataset
             print("Stored test dataset found, loading...", end="")
@@ -96,7 +98,10 @@ class DataLoader():
 
             if pre_process is not None:
                 x_test = pre_process(x_test)
-
+                
+            #extend axis
+            if extend_axis:
+                x_test = x_test[..., tf.newaxis].astype("float32")
             aug_x_test = gen_augment(x_test, n_augments=config['N_AUG'])
 
             # Create test dataset
