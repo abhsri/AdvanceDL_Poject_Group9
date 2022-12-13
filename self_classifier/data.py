@@ -56,7 +56,12 @@ class DataLoader():
             print("Generating new test augmentation dataset...")
             (x_train, y_train), (x_test,
                                  y_test) = config['DATASET'].load_data()
+            
+            # If only one chanel 
+            if len(x_train.shape) == 3:
+                x_train = x_train[..., tf.newaxis].astype("float32")
 
+            # Performe preprocessing
             if pre_process is not None:
                 x_train = pre_process(x_train)
                 
@@ -95,7 +100,11 @@ class DataLoader():
             print("Generating new test augmentation dataset...")
             (x_train, y_train), (x_test,
                                  y_test) = config['DATASET'].load_data()
+            # If only one chanel 
+            if len(x_test.shape) == 3:
+                x_test = x_test[..., tf.newaxis].astype("float32")
 
+            # Performe preprocessing
             if pre_process is not None:
                 x_test = pre_process(x_test)
                 

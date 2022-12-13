@@ -4,7 +4,6 @@ from .data import gen_augment, rand_augment, get_aug_seq
 
 # learning imports
 from .learn import UnderSupervisedLearner
-from .learn import check_prediction, check_augmentation
 
 # logging imports
 from .logging import DataRecorder
