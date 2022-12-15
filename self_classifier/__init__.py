@@ -23,5 +23,5 @@ from .metric import metric
 from .metric import class_histogram
 
 # plotter import
-from .plotter import label_plotter
+from .plotter import LabelPlotter
 

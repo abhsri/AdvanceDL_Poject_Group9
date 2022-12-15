@@ -1,9 +1,9 @@
 import numpy as np
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
 
 
-class label_plotter():
+class LabelPlotter():
     def __init__(self, train_X, train_y, test_X, test_y,
                  trasformed_train_X=None, trasformed_test_X=None):
         self.train_X = train_X
@@ -19,8 +19,11 @@ class label_plotter():
 
     def plot(self, model, plot_data='test'):
         # plot can take 3 inputs 'test' , 'train' or 'all'
-        if self.transform_obj is None:
+        if self.trasformed_X is None:
             self.transform_obj = self.dim_reduction(self.train_X)
+
+        if self.trasformed_test_X is None:
+            self.trasformed_test_X = self.dim_reduction(self.test_X)
 
         plot_data = plot_data.lower()
         if (plot_data == 'train') or (plot_data == 'all'):
@@ -52,6 +55,6 @@ class label_plotter():
 
 def main():
     # here is the usage
-    plotter = label_plotter(train_X, train_y, test_X, test_y)
+    plotter = LabelPlotter(train_X, train_y, test_X, test_y)
     plotter.plot_from_pred(test_y, 'test')
 
